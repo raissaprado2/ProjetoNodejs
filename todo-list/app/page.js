@@ -42,6 +42,18 @@ export default function Home() {
     setTodos(todos.filter((todo) => todo._id !== id));
   };
 
+  // PUT - update
+  const updateTodo = async (id, status) => {
+    const response = await fetch(`/api/todos/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ completed: !status }),
+    });
+    const data = await response.json();
+    fetchTodos();
+  };
 
   return (
     <div>
@@ -49,13 +61,17 @@ export default function Home() {
       <input
         type="text"
         value={newTodo}
-        onChange={(e) => setNewTodo(e.target.value)}
+        onChange={(e) => updateTodo(todo._id,e)}
       />
       <button onClick={addTodo}>Adicionar Tarefa</button>
       <ul>
         {todos.map((todo) => (
           <li key={todo._id}>
-            {todo.title}
+            {todo.title} - {todo.completed?"Concluído":"Pendente"}
+            <input
+            type="checkbox"
+            checked={todo.completed}
+            />
             <button onClick={() => deleteTodo(todo._id)}>Excluir</button>
           </li>
         ))}
@@ -63,3 +79,5 @@ export default function Home() {
     </div>
   );
 }
+
+
